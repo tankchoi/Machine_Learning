@@ -8,9 +8,12 @@ app = Flask(__name__)
 ridge_model = joblib.load('ridge_regression_model.pkl')
 nn_model = joblib.load('neural_network_model.pkl')
 lin_model = joblib.load('linear_regression_model.pkl')
+scaler = joblib.load('scaler.pkl')  # Tải scaler
+
 @app.route('/')
 def hello_world():
     return 'Bố mày đã deploy được rồi'
+
 def extract_features(data):
     return np.array([
         data.get('cylinders', 0),
@@ -44,7 +47,8 @@ def predict_nn():
         return jsonify({'error': 'Invalid input'}), 400
 
     features = extract_features(data)
-    nn_pred = nn_model.predict(features)[0]
+    scaled_features = scaler.transform(features)  # Áp dụng scaler
+    nn_pred = nn_model.predict(scaled_features)[0]
 
     return jsonify({
         'result': nn_pred
