@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify
 import joblib
 import numpy as np
 
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)
 
 # Tải các mô hình từ các tệp .pkl
 ridge_model = joblib.load('ridge_regression_model.pkl')
